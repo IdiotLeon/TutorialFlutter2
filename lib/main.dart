@@ -1,109 +1,120 @@
 import 'package:flutter/material.dart';
-import 'package:english_words/english_words.dart';
+import 'ShoppingList.dart';
+import 'ShoppingListItem.dart';
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Startup Name Generator',
-      theme: new ThemeData(
-        primaryColor: Colors.purpleAccent,
-      ),
-      home: RandomWords(),
-    );
-  }
+void main() {
+  runApp(MaterialApp(
+    title: 'Shopping App',
+    home: ShoppingList(
+      products: <Product>[
+        Product(name: 'Eggs'),
+        Product(name: 'Flour'),
+        Product(name: 'Chocolate chips'),
+      ],
+    ),
+  ));
 }
 
-class RandomWordsState extends State<RandomWords> {
-  final List<WordPair> _suggestions = <WordPair>[];
-  final Set<WordPair> _saved = new Set<WordPair>();
-  final TextStyle _biggerFont = const TextStyle(fontSize: 18.0);
-
+class TutorialHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text('Statup Name Generator'),
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.menu),
+          tooltip: 'Navigation menu',
+          onPressed: null,
+        ),
+        title: Text('Example title'),
         actions: <Widget>[
-          new IconButton(icon: const Icon(Icons.list), onPressed: _pushSaved),
+          IconButton(
+            icon: Icon(Icons.search),
+            tooltip: 'Search',
+            onPressed: null,
+          ),
         ],
       ),
-      body: _buildSuggestions(),
+      body: Center(
+        child: Text('Hello World'),
+      ),
+      floatingActionButton: FloatingActionButton(
+          tooltip: 'Add', child: Icon(Icons.add), onPressed: null),
     );
-  }
-
-  Widget _buildSuggestions() {
-    return ListView.builder(
-        padding: const EdgeInsets.all(16.0),
-        itemBuilder: (context, i) {
-          if (i.isOdd) return Divider();
-
-          final index = i ~/ 2;
-
-          if (index >= _suggestions.length) {
-            _suggestions.addAll(generateWordPairs().take(10));
-          }
-
-          return _buildRow(_suggestions[index]);
-        });
-  }
-
-  void _pushSaved() {
-    Navigator.of(context).push(
-      new MaterialPageRoute<void>(builder: (BuildContext context) {
-        final Iterable<ListTile> tiles = _saved.map(
-          (WordPair pair) {
-            return new ListTile(
-              title: new Text(
-                pair.asPascalCase,
-                style: _biggerFont,
-              ),
-            );
-          },
-        );
-
-        final List<Widget> divided = ListTile.divideTiles(
-          context: context,
-          tiles: tiles,
-        ).toList();
-
-        return new Scaffold(
-          appBar: new AppBar(
-            title: const Text('Saved Suggestions'),
-          ),
-          body: new ListView(children: divided),
-        );
-      }),
-    );
-  }
-
-  Widget _buildRow(WordPair pair) {
-    final bool alreadySaved = _saved.contains(pair);
-
-    return ListTile(
-        title: Text(
-          pair.asPascalCase,
-          style: _biggerFont,
-        ),
-        trailing: new Icon(
-          alreadySaved ? Icons.favorite : Icons.favorite_border,
-          color: alreadySaved ? Colors.red : null,
-        ),
-        onTap: () {
-          setState(() {
-            if (alreadySaved) {
-              _saved.remove(pair);
-            } else {
-              _saved.add(pair);
-            }
-          });
-        });
   }
 }
 
-class RandomWords extends StatefulWidget {
+class MyButton extends StatelessWidget {
   @override
-  RandomWordsState createState() => new RandomWordsState();
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        print('MyButton was tapped!');
+      },
+      child: Container(
+        height: 36.0,
+        padding: const EdgeInsets.all(8.0),
+        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5.0),
+          color: Colors.lightGreen[500],
+        ),
+        child: Center(
+          child: Text('Engage'),
+        ),
+      ),
+    );
+  }
+}
+
+class Counter extends StatefulWidget {
+  @override
+  _CounterState createState() => _CounterState();
+}
+
+class _CounterState extends State<Counter> {
+  int _counter = 0;
+
+  void _increment() {
+    setState(() {
+      _counter++;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        RaisedButton(
+          onPressed: _increment,
+          child: Text('Increment'),
+        ),
+        Text('Count: $_counter'),
+      ],
+    );
+  }
+}
+
+class CounterDisplay extends StatelessWidget {
+  CounterDisplay({this.count});
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text('Count: $count');
+  }
+}
+
+class CounterIncrementor extends StatelessWidget {
+  CounterIncrementor({this.onPressed});
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return RaisedButton(
+      onPressed: onPressed,
+      child: Text('Increment'),
+    );
+  }
 }
